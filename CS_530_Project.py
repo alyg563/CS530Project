@@ -4,23 +4,15 @@
 
 
 # Code Source: https://www.waveshare.com/wiki/Sense_HAT_(B)#Raspberry_Pi_examples
-#Import statements
-#import time
-#import smbus
-#import math
 
 # !/usr/bin/python
 # -*- coding:utf-8 -*-
+# Import Statements
 import smbus
 import math
 import time
 
-Gyro = [0, 0, 0]
 Accel = [0, 0, 0]
-Mag = [0, 0, 0]
-pitch = 0.0
-roll = 0.0
-yaw = 0.0
 pu8data = [0, 0, 0, 0, 0, 0, 0, 0]
 U8tempX = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 U8tempY = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -29,7 +21,6 @@ Ki = 1.0
 Kp = 4.50
 q0 = 1.0
 q1 = q2 = q3 = 0.0
-angles = [0.0, 0.0, 0.0]
 true = 0x01
 false = 0x00
 # define ICM-20948 Device I2C address
@@ -42,58 +33,23 @@ I2C_ADD_ICM20948_AK09916_WRITE = 0x00
 REG_ADD_WIA = 0x00
 REG_VAL_WIA = 0xEA
 REG_ADD_USER_CTRL = 0x03
-REG_VAL_BIT_DMP_EN = 0x80
-REG_VAL_BIT_FIFO_EN = 0x40
 REG_VAL_BIT_I2C_MST_EN = 0x20
-REG_VAL_BIT_I2C_IF_DIS = 0x10
-REG_VAL_BIT_DMP_RST = 0x08
-REG_VAL_BIT_DIAMOND_DMP_RST = 0x04
 REG_ADD_PWR_MIGMT_1 = 0x06
 REG_VAL_ALL_RGE_RESET = 0x80
 REG_VAL_RUN_MODE = 0x01  # Non low-power mode
-REG_ADD_LP_CONFIG = 0x05
-REG_ADD_PWR_MGMT_1 = 0x06
-REG_ADD_PWR_MGMT_2 = 0x07
 REG_ADD_ACCEL_XOUT_H = 0x2D
-REG_ADD_ACCEL_XOUT_L = 0x2E
-REG_ADD_ACCEL_YOUT_H = 0x2F
-REG_ADD_ACCEL_YOUT_L = 0x30
-REG_ADD_ACCEL_ZOUT_H = 0x31
-REG_ADD_ACCEL_ZOUT_L = 0x32
-REG_ADD_GYRO_XOUT_H = 0x33
-REG_ADD_GYRO_XOUT_L = 0x34
-REG_ADD_GYRO_YOUT_H = 0x35
-REG_ADD_GYRO_YOUT_L = 0x36
-REG_ADD_GYRO_ZOUT_H = 0x37
-REG_ADD_GYRO_ZOUT_L = 0x38
 REG_ADD_EXT_SENS_DATA_00 = 0x3B
 REG_ADD_REG_BANK_SEL = 0x7F
 REG_VAL_REG_BANK_0 = 0x00
-REG_VAL_REG_BANK_1 = 0x10
 REG_VAL_REG_BANK_2 = 0x20
 REG_VAL_REG_BANK_3 = 0x30
 
 # user bank 1 register
 # user bank 2 register
-REG_ADD_GYRO_SMPLRT_DIV = 0x00
-REG_ADD_GYRO_CONFIG_1 = 0x01
-REG_VAL_BIT_GYRO_DLPCFG_2 = 0x10  # bit[5:3]
-REG_VAL_BIT_GYRO_DLPCFG_4 = 0x20  # bit[5:3]
-REG_VAL_BIT_GYRO_DLPCFG_6 = 0x30  # bit[5:3]
-REG_VAL_BIT_GYRO_FS_250DPS = 0x00  # bit[2:1]
-REG_VAL_BIT_GYRO_FS_500DPS = 0x02  # bit[2:1]
-REG_VAL_BIT_GYRO_FS_1000DPS = 0x04  # bit[2:1]
-REG_VAL_BIT_GYRO_FS_2000DPS = 0x06  # bit[2:1]
-REG_VAL_BIT_GYRO_DLPF = 0x01  # bit[0]
 REG_ADD_ACCEL_SMPLRT_DIV_2 = 0x11
 REG_ADD_ACCEL_CONFIG = 0x14
-REG_VAL_BIT_ACCEL_DLPCFG_2 = 0x10  # bit[5:3]
-REG_VAL_BIT_ACCEL_DLPCFG_4 = 0x20  # bit[5:3]
 REG_VAL_BIT_ACCEL_DLPCFG_6 = 0x30  # bit[5:3]
 REG_VAL_BIT_ACCEL_FS_2g = 0x00  # bit[2:1]
-REG_VAL_BIT_ACCEL_FS_4g = 0x02  # bit[2:1]
-REG_VAL_BIT_ACCEL_FS_8g = 0x04  # bit[2:1]
-REG_VAL_BIT_ACCEL_FS_16g = 0x06  # bit[2:1]
 REG_VAL_BIT_ACCEL_DLPF = 0x01  # bit[0]
 
 # user bank 3 register
@@ -102,7 +58,6 @@ REG_ADD_I2C_SLV0_REG = 0x04
 REG_ADD_I2C_SLV0_CTRL = 0x05
 REG_VAL_BIT_SLV0_EN = 0x80
 REG_VAL_BIT_MASK_LEN = 0x07
-REG_ADD_I2C_SLV0_DO = 0x06
 REG_ADD_I2C_SLV1_ADDR = 0x07
 REG_ADD_I2C_SLV1_REG = 0x08
 REG_ADD_I2C_SLV1_CTRL = 0x09
@@ -111,34 +66,16 @@ REG_ADD_I2C_SLV1_DO = 0x0A
 # define ICM-20948 Register  end
 
 # define ICM-20948 MAG Register
-REG_ADD_MAG_WIA1 = 0x00
-REG_VAL_MAG_WIA1 = 0x48
-REG_ADD_MAG_WIA2 = 0x01
-REG_VAL_MAG_WIA2 = 0x09
-REG_ADD_MAG_ST2 = 0x10
-REG_ADD_MAG_DATA = 0x11
+
 REG_ADD_MAG_CNTL2 = 0x31
-REG_VAL_MAG_MODE_PD = 0x00
-REG_VAL_MAG_MODE_SM = 0x01
-REG_VAL_MAG_MODE_10HZ = 0x02
 REG_VAL_MAG_MODE_20HZ = 0x04
-REG_VAL_MAG_MODE_50HZ = 0x05
-REG_VAL_MAG_MODE_100HZ = 0x08
-REG_VAL_MAG_MODE_ST = 0x10
 # define ICM-20948 MAG Register  end
-
-MAG_DATA_LEN = 6
-
 
 class ICM20948(object):
     def __init__(self, address=I2C_ADD_ICM20948):
         self._address = address
         self._bus = smbus.SMBus(1)
         bRet = self.icm20948Check()  # Initialization of the device multiple times after power on will result in a return error
-        # while true != bRet:
-        #   print("ICM-20948 Error\n" )
-        #   time.sleep(0.5)
-        # print("ICM-20948 OK\n" )
         time.sleep(0.5)  # We can skip this detection by delaying it by 500 milliseconds
         # user bank 0 register
         self._write_byte(REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0)
@@ -147,9 +84,6 @@ class ICM20948(object):
         self._write_byte(REG_ADD_PWR_MIGMT_1, REG_VAL_RUN_MODE)
         # user bank 2 register
         self._write_byte(REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_2)
-        self._write_byte(REG_ADD_GYRO_SMPLRT_DIV, 0x07)
-        self._write_byte(REG_ADD_GYRO_CONFIG_1,
-                         REG_VAL_BIT_GYRO_DLPCFG_6 | REG_VAL_BIT_GYRO_FS_1000DPS | REG_VAL_BIT_GYRO_DLPF)
         self._write_byte(REG_ADD_ACCEL_SMPLRT_DIV_2, 0x07)
         self._write_byte(REG_ADD_ACCEL_CONFIG,
                          REG_VAL_BIT_ACCEL_DLPCFG_6 | REG_VAL_BIT_ACCEL_FS_2g | REG_VAL_BIT_ACCEL_DLPF)
@@ -159,7 +93,7 @@ class ICM20948(object):
         self.icm20948WriteSecondary(I2C_ADD_ICM20948_AK09916 | I2C_ADD_ICM20948_AK09916_WRITE, REG_ADD_MAG_CNTL2,
                                     REG_VAL_MAG_MODE_20HZ)
 
-    def icm20948_Gyro_Accel_Read(self):
+    def icm20948_Accel_Read(self):
         self._write_byte(REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_0)
         data = self._read_block(REG_ADD_ACCEL_XOUT_H, 12)
         self._write_byte(REG_ADD_REG_BANK_SEL, REG_VAL_REG_BANK_2)
@@ -247,10 +181,9 @@ class ICM20948(object):
         self._bus.write_byte_data(self._address, cmd, val)
         time.sleep(0.0001)
 
-    def imuAHRSupdate(self, gx, gy, gz, ax, ay, az, mx, my, mz):
+    def imuAHRSupdate(self, ax, ay, az):
         norm = 0.0
-        hx = hy = hz = bx = bz = 0.0
-        vx = vy = vz = wx = wy = wz = 0.0
+        vx = vy = vz = 0.0
         exInt = eyInt = ezInt = 0.0
         ex = ey = ez = 0.0
         halfT = 0.024
@@ -274,44 +207,20 @@ class ICM20948(object):
         ay = ay * norm
         az = az * norm
 
-        #norm = float(1 / math.sqrt(mx * mx + my * my + mz * mz))
-        #mx = mx * norm
-        #my = my * norm
-        #mz = mz * norm
-
-        # compute reference direction of flux
-        hx = 2 * mx * (0.5 - q2q2 - q3q3) + 2 * my * (q1q2 - q0q3) + 2 * mz * (q1q3 + q0q2)
-        hy = 2 * mx * (q1q2 + q0q3) + 2 * my * (0.5 - q1q1 - q3q3) + 2 * mz * (q2q3 - q0q1)
-        hz = 2 * mx * (q1q3 - q0q2) + 2 * my * (q2q3 + q0q1) + 2 * mz * (0.5 - q1q1 - q2q2)
-        bx = math.sqrt((hx * hx) + (hy * hy))
-        bz = hz
-
-        # estimated direction of gravity and flux (v and w)
+        # estimated direction of gravity(v)
         vx = 2 * (q1q3 - q0q2)
         vy = 2 * (q0q1 + q2q3)
         vz = q0q0 - q1q1 - q2q2 + q3q3
-        wx = 2 * bx * (0.5 - q2q2 - q3q3) + 2 * bz * (q1q3 - q0q2)
-        wy = 2 * bx * (q1q2 - q0q3) + 2 * bz * (q0q1 + q2q3)
-        wz = 2 * bx * (q0q2 + q1q3) + 2 * bz * (0.5 - q1q1 - q2q2)
 
         # error is sum of cross product between reference direction of fields and direction measured by sensors
-        ex = (ay * vz - az * vy) + (my * wz - mz * wy)
-        ey = (az * vx - ax * vz) + (mz * wx - mx * wz)
-        ez = (ax * vy - ay * vx) + (mx * wy - my * wx)
+        ex = (ay * vz - az * vy)
+        ey = (az * vx - ax * vz)
+        ez = (ax * vy - ay * vx)
 
         if (ex != 0.0 and ey != 0.0 and ez != 0.0):
             exInt = exInt + ex * Ki * halfT
             eyInt = eyInt + ey * Ki * halfT
             ezInt = ezInt + ez * Ki * halfT
-
-            gx = gx + Kp * ex + exInt
-            gy = gy + Kp * ey + eyInt
-            gz = gz + Kp * ez + ezInt
-
-        q0 = q0 + (-q1 * gx - q2 * gy - q3 * gz) * halfT
-        q1 = q1 + (q0 * gx + q2 * gz - q3 * gy) * halfT
-        q2 = q2 + (q0 * gy - q1 * gz + q3 * gx) * halfT
-        q3 = q3 + (q0 * gz + q1 * gy - q2 * gx) * halfT
 
         norm = float(1 / math.sqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3))
         q0 = q0 * norm
@@ -326,21 +235,15 @@ class ICM20948(object):
         return bRet
 
     def icm20948CalAvgValue(self):
-        MotionVal[0] = Gyro[0] / 32.8
-        MotionVal[1] = Gyro[1] / 32.8
-        MotionVal[2] = Gyro[2] / 32.8
-        MotionVal[3] = Accel[0]
-        MotionVal[4] = Accel[1]
-        MotionVal[5] = Accel[2]
-        MotionVal[6] = Mag[0]
-        MotionVal[7] = Mag[1]
-        MotionVal[8] = Mag[2]
-
+        MotionVal[0] = Accel[0]
+        MotionVal[1] = Accel[1]
+        MotionVal[2] = Accel[2]
     # Detect and return current acceleration
     def detectFall():
         acceleration = input
         #from accelerometer  # Store current acceleration
         return acceleration  # Return value found
+
 
     # Make emergency call based on inputted contact info
     def call(contactInfo):
@@ -352,23 +255,18 @@ if __name__ == '__main__':
     import time
 
     print("\nSense HAT Test Program ...\n")
-    MotionVal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    MotionVal = [0.0, 0.0, 0.0]
     icm20948 = ICM20948()
     while True:
-        icm20948.icm20948_Gyro_Accel_Read()
+        icm20948.icm20948_Accel_Read()
         icm20948.icm20948CalAvgValue()
         time.sleep(0.1)
-        icm20948.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175, MotionVal[2] * 0.0175,
-                               MotionVal[3], MotionVal[4], MotionVal[5],
-                               MotionVal[6], MotionVal[7], MotionVal[8])
-        #pitch = math.asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3
-        #roll = math.atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1) * 57.3
-        #yaw = math.atan2(-2 * q1 * q2 - 2 * q0 * q3, 2 * q2 * q2 + 2 * q3 * q3 - 1) * 57.3
+        icm20948.imuAHRSupdate(MotionVal[0], MotionVal[1], MotionVal[2])
+
         print("\r\n /-------------------------------------------------------------/ \r\n")
-        #print('\r\n Roll = %.2f , Pitch = %.2f , Yaw = %.2f\r\n' % (roll, pitch, yaw))
+
         print('\r\nAcceleration:  X = %d , Y = %d , Z = %d\r\n' % (Accel[0], Accel[1], Accel[2]))
-        #print('\r\nGyroscope:     X = %d , Y = %d , Z = %d\r\n' % (Gyro[0], Gyro[1], Gyro[2]))
-        #print('\r\nMagnetic:      X = %d , Y = %d , Z = %d' % ((Mag[0]), Mag[1], Mag[2]))
+
 
 
         #fallVelocity = 0
@@ -384,5 +282,3 @@ if __name__ == '__main__':
                 #fallen = true # exit loop
             #Potentially have small delay in program to not query accelerometer a ridiculous number of times
             #time.sleep(0.1)
-
-
