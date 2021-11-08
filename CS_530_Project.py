@@ -238,47 +238,39 @@ class ICM20948(object):
         MotionVal[0] = Accel[0]
         MotionVal[1] = Accel[1]
         MotionVal[2] = Accel[2]
+
     # Detect and return current acceleration
-    def detectFall():
-        acceleration = input
-        #from accelerometer  # Store current acceleration
-        return acceleration  # Return value found
-
-
-    # Make emergency call based on inputted contact info
-    def call(contactInfo):
-        #make call to contactInfo number or send email to contactInfo email
-        return
-
-
-if __name__ == '__main__':
-    import time
-
-    print("\nSense HAT Test Program ...\n")
-    MotionVal = [0.0, 0.0, 0.0]
-    icm20948 = ICM20948()
-    while True:
-        icm20948.icm20948_Accel_Read()
-        icm20948.icm20948CalAvgValue()
+    def detectFall(self):
+        detector.icm20948_Accel_Read()
+        detector.icm20948CalAvgValue()
         time.sleep(0.1)
-        icm20948.imuAHRSupdate(MotionVal[0], MotionVal[1], MotionVal[2])
+        detector.imuAHRSupdate(MotionVal[0], MotionVal[1], MotionVal[2])
+        #Converts from LSB units to G's
+        Accel[0] /= 16384.0
+        Accel[1] /= 16384.0
+        Accel[2] /= 16384.0
 
         print("\r\n /-------------------------------------------------------------/ \r\n")
+        print('\r\nAcceleration:  X = %f , Y = %f , Z = %f\r\n' % (Accel[0], Accel[1], Accel[2]))
+        return Accel[2]
 
-        print('\r\nAcceleration:  X = %d , Y = %d , Z = %d\r\n' % (Accel[0], Accel[1], Accel[2]))
+# Make emergency call based on inputted contact info
+def call(contactInfo):
+    #make call to contactInfo number or send email to contactInfo email
+    print("Called!")
+    return
 
+fallen = false
+contactInfo = "" #Store user inputted contact info
+MotionVal = [0.0, 0.0, 0.0]
+detector = ICM20948()
+FallThreshold = -1.5 # A fall is considered 1.5 Gs in the negative Z direction
 
-
-        #fallVelocity = 0
-        #fallen = false
-
-        #Main while loop that constantly queries the accelerometer for current velocity,
-        # and makes a call if it is determined that a person is falling
-        #while not fallen:
-            #contactInfo = "" #Store user inputted contact info
-            #acceleration = detectFall() #Call fall detection function which interfaces with accelerometer
-            #if acceleration > 1: # If object or person is falling
-                #call(contactInfo) # Make emergency call
-                #fallen = true # exit loop
-            #Potentially have small delay in program to not query accelerometer a ridiculous number of times
-            #time.sleep(0.1)
+#Main while loop that constantly queries the accelerometer for current velocity,
+# and makes a call if it is determined that a person is falling
+while not fallen:
+    if detector.detectFall() <= FallThreshold: 
+        print("Fallen!")
+        call(contactInfo) # Make emergency call
+        fallen = true # exit loop
+        
