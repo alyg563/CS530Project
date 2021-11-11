@@ -1,14 +1,3 @@
-# CS 530- Fall Detection Program
-# Authors:
-# Shane Tasker, Alyssa Garcia, Sawyer Thompson, Alexander Ray
-
-
-# Code Source: https://www.waveshare.com/wiki/Sense_HAT_(B)#Raspberry_Pi_examples
-#Import statements
-#import time
-#import smbus
-#import math
-
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 import time
@@ -353,7 +342,7 @@ class ICM20948(object):
       gx = gx + Kp * ex + exInt
       gy = gy + Kp * ey + eyInt
       gz = gz + Kp * ez + ezInt
-
+      
     q0 = q0 + (-q1 * gx - q2 * gy - q3 * gz) * halfT
     q1 = q1 + (q0 * gx + q2 * gz - q3 * gy) * halfT
     q2 = q2 + (q0 * gy - q1 * gz + q3 * gx) * halfT
@@ -384,32 +373,40 @@ class ICM20948(object):
     MotionVal[6]=Mag[0]
     MotionVal[7]=Mag[1]
     MotionVal[8]=Mag[2]
+    
+def detectFall():
+    detector.icm20948_Gyro_Accel_Read()
+    detector.icm20948MagRead()
+    detector.icm20948CalAvgValue()
+    time.sleep(0.1)
+    detector.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175,MotionVal[2] * 0.0175,
+                MotionVal[3],MotionVal[4],MotionVal[5], 
+                MotionVal[6], MotionVal[7], MotionVal[8])
+    pitch = math.asin(-2 * q1 * q3 + 2 * q0* q2)* 57.3
+    roll  = math.atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2* q2 + 1)* 57.3
+    yaw   = math.atan2(-2 * q1 * q2 - 2 * q0 * q3, 2 * q2 * q2 + 2 * q3 * q3 - 1) * 57.3
 
-    # Detect and return current acceleration
-    def detectFall(self):
-        detector.icm20948_Gyro_Accel_Read()
-        detector.icm20948CalAvgValue()
-        time.sleep(0.1)
-        icm20948.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175, MotionVal[2] * 0.0175,
-                               MotionVal[3], MotionVal[4], MotionVal[5],
-                               MotionVal[6], MotionVal[7], MotionVal[8])
-        
-        #Calculates pitch roll and yaw based on Gyro values
-        pitch = math.asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3
-        roll = math.atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1) * 57.3
-        yaw = math.atan2(-2 * q1 * q2 - 2 * q0 * q3, 2 * q2 * q2 + 2 * q3 * q3 - 1) * 57.3
+    #Converts from LSB units to G's
+    Accel[0] /= 16384.0
+    Accel[1] /= 16384.0
+    Accel[2] /= 16384.0
 
-        #Converts from LSB units to G's
-        Accel[0] /= 16384.0
-        Accel[1] /= 16384.0
-        Accel[2] /= 16384.0
-
-        print("\r\n /-------------------------------------------------------------/ \r\n")
-        print('\r\n Roll = %.2f , Pitch = %.2f , Yaw = %.2f\r\n' % (roll, pitch, yaw))
-        print('\r\nAcceleration:  X = %d , Y = %d , Z = %d\r\n' % (Accel[0], Accel[1], Accel[2]))
-        print('\r\nGyroscope:     X = %d , Y = %d , Z = %d\r\n' % (Gyro[0], Gyro[1], Gyro[2]))
-        return Accel[2]
-
+    print("\r\n /-------------------------------------------------------------/ \r\n")
+    print('\r\n Roll = %.2f , Pitch = %.2f , Yaw = %.2f\r\n'%(roll,pitch,yaw))
+    print('\r\n Acceleration:  X = %f , Y = %f , Z = %f\r\n'%(Accel[0],Accel[1],Accel[2]))
+    #print('\r\n g: gx = %f\r\n'%(gx))
+    print('\r\n Gyroscope:     X = %d , Y = %d , Z = %d\r\n'%(Gyro[0],Gyro[1],Gyro[2]))
+    #print('\r\nMagnetic:      X = %d , Y = %d , Z = %d'%((Mag[0]),Mag[1],Mag[2]))
+    
+    AccelMagnitude = math.sqrt(Accel[0] * Accel[0] + Accel[1] * Accel[1] + Accel[2] * Accel[2])
+    x_Down_Accel_squared = AccelMagnitude * math.sin(pitch) * AccelMagnitude * math.sin(pitch)
+    y_Down_Accel_squared = AccelMagnitude * math.cos(pitch) * math.sin(roll) * AccelMagnitude * math.cos(pitch) * math.sin(roll)
+    z_Down_Accel_squared = AccelMagnitude * math.cos(pitch) * math.cos(roll) * AccelMagnitude * math.cos(pitch) * math.cos(roll)
+    
+    Down_Accel_Magnitude = math.sqrt(x_Down_Accel_squared + y_Down_Accel_squared + z_Down_Accel_squared)
+    print(Down_Accel_Magnitude)
+    return Down_Accel_Magnitude
+    
 # Make emergency call based on inputted contact info
 def call(contactInfo):
     #make call to contactInfo number or send email to contactInfo email
@@ -420,13 +417,24 @@ fallen = false
 contactInfo = "" #Store user inputted contact info
 MotionVal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 detector = ICM20948()
-FallThreshold = -1.5 # A fall is considered 1.5 Gs in the negative Z direction
+FallThreshold = 1.5 # A fall is considered 1.5 Gs Downwards
 
 #Main while loop that constantly queries the accelerometer for current velocity,
 # and makes a call if it is determined that a person is falling
 while not fallen:
-    if detector.detectFall() <= FallThreshold: 
+    if detectFall() >= FallThreshold: 
         print("Fallen!")
         call(contactInfo) # Make emergency call
         fallen = true # exit loop
-        
+
+
+       
+      
+         
+      
+
+
+
+
+
+      
