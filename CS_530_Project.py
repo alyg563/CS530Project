@@ -412,8 +412,8 @@ def detectFall():
 def call(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
-  sender_email = "sender@gmail.com"
-  receiver_email = "receiver@gmail.com"
+  sender_email = "cs530projectsender@gmail.com"
+  receiver_email = "5302774691@vtext.com"
   password = input("Type your password and press enter:")
 
   message = """\
