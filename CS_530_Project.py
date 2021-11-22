@@ -417,8 +417,8 @@ def call(contactInfo):
   password = input("Type your password and press enter:")
 
   message = """\
-  Subject: Test Email\
-  This is a test email.\
+  Subject: Test Email
+  This is a test email
   This message is sent from Python."""
 
   context = ssl.create_default_context()
