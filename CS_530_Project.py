@@ -417,7 +417,7 @@ def call(contactInfo):
   receiver_email = phone + endEmail
   subject = 'HELP!'
   body =  name + " has fallen" + "\n" + "Come help him at his current Location: " + address
-  message = f'Subject: {subject} \n {body}'
+  message = f'Subject: {subject} \n\n {body}'
 
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
