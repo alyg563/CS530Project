@@ -415,8 +415,9 @@ def call(contactInfo):
   smtp_server = "smtp.gmail.com"
   sender_email = gmail
   receiver_email = phone + endEmail
-
-  message = "Subject: help " + name + " has fallen" + "\n" + "Come help him at his current Location: " + address
+  subject = 'HELP!'
+  body =  name + " has fallen" + "\n" + "Come help him at his current Location: " + address
+  message = f'Subject: {subject} \n {body}'
 
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
@@ -426,8 +427,7 @@ def call(contactInfo):
       server.login(sender_email, password)
       server.sendmail(sender_email, receiver_email, message)
 
-      #make call to contactInfo number or send email to contactInfo email
-      print("Called!")
+      print("Texted")
       return
 
 fallen = false
