@@ -417,7 +417,7 @@ def call(contactInfo):
   receiver_email = phone + endEmail
   subject = '    HELP!'
   sender = "  " + name 
-  body =  name + " has fallen" + "\n" + "\n" + "Come help him at his Location: " + address
+  body =  name + " has fallen!" + "\n" + "\n" + "Come help him at his location: " + "\n" + address
   message = f'From: {sender} Subject: {subject} \n\n {body}'
 
   context = ssl.create_default_context()
