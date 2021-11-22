@@ -413,7 +413,7 @@ def detectFall():
 def call(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
-  sender_email = f"'{name} <{gmail}>'"
+  sender_email = gmail
   receiver_email = phone + endEmail
   subject = '    HELP!'
   sender = "  " + name 
