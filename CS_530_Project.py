@@ -438,19 +438,20 @@ FallThreshold = 1 # A fall is considered 1.5 Gs Downwards
 
 # User input required to Text their emrgency contact
 name = input("What is your Name? ")
-endEmail = ""
-while endEmail != "":
-  serviceProvider = input("Enter your emergency Contact's Service Provider, (Verizon, TMobile, AT&T, Sprint")
-  if(serviceProvider.lower() =="sprint"):
-    endEmail = "@messaging.sprintpcs.com"
-  elif (serviceProvider.lower() == "at&t"):
-    endEmail = "@txt.att.net"
-  elif (serviceProvider.lower() == "verizon"):
-    endEmail = "@vzwpix.com"
-  elif (serviceProvider.lower() == "tmobile"):
-    endEmail = "@tmomail.net"
-  else: 
-    print("Not Valid Input, try again: \n")
+endEmail = ''
+
+#Make sure a correct service provider
+serviceProvider = input("Enter your emergency Contact's Service Provider, (Verizon, TMobile, AT&T, Sprint")
+if(serviceProvider.lower() =="sprint"):
+  endEmail = "@messaging.sprintpcs.com"
+elif (serviceProvider.lower() == "at&t"):
+  endEmail = "@txt.att.net"
+elif (serviceProvider.lower() == "verizon"):
+  endEmail = "@vzwpix.com"
+elif (serviceProvider.lower() == "tmobile"):
+  endEmail = "@tmomail.net"
+else: 
+  print("Not Valid Input, \n")
 phone = input("Enter your emergency contact's phone number")
 output = phone + endEmail
 address = input("Enter your current location (address): ")
