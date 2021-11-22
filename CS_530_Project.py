@@ -413,7 +413,7 @@ def call(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
   sender_email = "cs530projectsender@gmail.com"
-  receiver_email = "5302774691@vtext.com"
+  receiver_email = "5302774691@vzwpix.com"
   password = input("Type your password and press enter:")
 
   message = """\
