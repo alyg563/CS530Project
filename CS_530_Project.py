@@ -416,7 +416,7 @@ def call(contactInfo):
   sender_email = gmail
   receiver_email = phone + endEmail
 
-  message = name + "has fallen" + "\n" + "Come help him at his current Location:" + address
+  message = "Subject: help " + name + " has fallen" + "\n" + "Come help him at his current Location: " + address
 
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
@@ -441,7 +441,7 @@ name = input("What is your Name? ")
 endEmail = ''
 
 #Make sure a correct service provider
-serviceProvider = input("Enter your emergency Contact's Service Provider, (Verizon, TMobile, AT&T, Sprint")
+serviceProvider = input("Enter your emergency Contact's Service Provider, (Verizon, TMobile, AT&T, Sprint: ")
 if(serviceProvider.lower() =="sprint"):
   endEmail = "@messaging.sprintpcs.com"
 elif (serviceProvider.lower() == "at&t"):
@@ -452,12 +452,12 @@ elif (serviceProvider.lower() == "tmobile"):
   endEmail = "@tmomail.net"
 else: 
   print("Not Valid Input, \n")
-phone = input("Enter your emergency contact's phone number")
+phone = input("Enter your emergency contact's phone number: ")
 output = phone + endEmail
 address = input("Enter your current location (address): ")
 print("\nEnsure your email's privacy allows Less Secure APPs \n")
 gmail = input("Enter your gmail address: ")
-password = input("Type your password and press enter:")
+password = input("Type your password and press enter: ")
 
 #Main while loop that constantly queries the accelerometer for current velocity,
 # and makes a call if it is determined that a person is falling
