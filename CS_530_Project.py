@@ -3,6 +3,7 @@
 import time
 import smbus
 import math
+import smtplib, ssl
 Gyro  = [0,0,0]
 Accel = [0,0,0]
 Mag   = [0,0,0]
@@ -409,15 +410,34 @@ def detectFall():
     
 # Make emergency call based on inputted contact info
 def call(contactInfo):
-    #make call to contactInfo number or send email to contactInfo email
-    print("Called!")
-    return
+  port = 587  # For starttls
+  smtp_server = "smtp.gmail.com"
+  sender_email = "sender@gmail.com"
+  receiver_email = "receiver@gmail.com"
+  password = input("Type your password and press enter:")
+
+  message = """\
+  Subject: Test Email\
+  This is a test email.\
+  This message is sent from Python."""
+
+  context = ssl.create_default_context()
+  with smtplib.SMTP(smtp_server, port) as server:
+      server.ehlo()  # Can be omitted
+      server.starttls(context=context)
+      server.ehlo()  # Can be omitted
+      server.login(sender_email, password)
+      server.sendmail(sender_email, receiver_email, message)
+
+      #make call to contactInfo number or send email to contactInfo email
+      print("Called!")
+      return
 
 fallen = false
 contactInfo = "" #Store user inputted contact info
 MotionVal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 detector = ICM20948()
-FallThreshold = 1.5 # A fall is considered 1.5 Gs Downwards
+FallThreshold = 1 # A fall is considered 1.5 Gs Downwards
 
 #Main while loop that constantly queries the accelerometer for current velocity,
 # and makes a call if it is determined that a person is falling
