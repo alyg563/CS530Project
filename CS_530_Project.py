@@ -413,14 +413,10 @@ def detectFall():
 def call(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
-  sender_email = "cs530projectsender@gmail.com"
-  receiver_email = "5302774691@vzwpix.com"
-  password = input("Type your password and press enter:")
+  sender_email = gmail
+  receiver_email = phone + endEmail
 
-  message = """\
-  Subject: Test Email
-  This is a test email
-  This message is sent from Python."""
+  message = name + "has fallen" + "\n" + "Come help him at his current Location:" + address
 
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
@@ -440,8 +436,8 @@ MotionVal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 detector = ICM20948()
 FallThreshold = 1 # A fall is considered 1.5 Gs Downwards
 
-#Main while loop that constantly queries the accelerometer for current velocity,
-# and makes a call if it is determined that a person is falling
+# User input required to Text their emrgency contact
+name = input("What is your Name? ")
 endEmail = ""
 while endEmail != "":
   serviceProvider = input("Enter your emergency Contact's Service Provider, (Verizon, TMobile, AT&T, Sprint")
@@ -455,15 +451,15 @@ while endEmail != "":
     endEmail = "@tmomail.net"
   else: 
     print("Not Valid Input, try again: \n")
-
 phone = input("Enter your emergency contact's phone number")
-
 output = phone + endEmail
-Address = input("Enter your address: ")
+address = input("Enter your current location (address): ")
 print("\nEnsure your email's privacy allows Less Secure APPs \n")
-email = input("Enter your email address: ")
+gmail = input("Enter your gmail address: ")
 password = input("Type your password and press enter:")
 
+#Main while loop that constantly queries the accelerometer for current velocity,
+# and makes a call if it is determined that a person is falling
 while not fallen:
     if detectFall() >= FallThreshold: 
         print("Fallen!")
