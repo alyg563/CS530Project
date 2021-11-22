@@ -417,7 +417,7 @@ def call(contactInfo):
   receiver_email = phone + endEmail
   from email.mime.text import MIMEText
   from email.mime.multipart import MIMEMultipart
-  subject = "   HELP!"
+  subject = "   " + "HELP!"
   body =  name + " has fallen!" + "\n" + "\n" + "Come help him at his location: " + "\n" + address
   message = MIMEMultipart('alternative')
   message['From'] = name + f' <{gmail}>'
