@@ -415,8 +415,12 @@ def call(contactInfo):
   smtp_server = "smtp.gmail.com"
   sender_email = "cs530projectsender@gmail.com"
   receiver_email = "5302774691@vzwpix.com"
+  password = input("Type your password and press enter:")
 
-  message =  "Subject: Test Email, \n This is a Test Email"
+  message = """\
+  Subject: Test Email
+  This is a test email
+  This message is sent from Python."""
 
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
