@@ -415,17 +415,22 @@ def call(contactInfo):
   smtp_server = "smtp.gmail.com"
   sender_email = gmail
   receiver_email = phone + endEmail
+  from email.mime.text import MIMEText
+  from email.mime.multipart import MIMEMultipart
   subject = "   HELP!"
   body =  name + " has fallen!" + "\n" + "\n" + "Come help him at his location: " + "\n" + address
-  message = f'Subject: {subject} \n\n {body}'
-
+  message = MIMEMultipart('alternative')
+  message['From'] = name + f' <{gmail}>'
+  message['Subject'] = subject
+  message.attach(MIMEText(body))
+  text = message.as_string()
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
       server.ehlo()  # Can be omitted
       server.starttls(context=context)
       server.ehlo()  # Can be omitted
       server.login(sender_email, password)
-      server.sendmail(sender_email, receiver_email, message)
+      server.sendmail(sender_email, receiver_email, text)
 
       print("Texted")
       return
