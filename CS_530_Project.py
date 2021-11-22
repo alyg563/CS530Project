@@ -413,12 +413,12 @@ def detectFall():
 def call(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
-  sender_email = gmail
+  sender_email = f"'{name} <{gmail}>'"
   receiver_email = phone + endEmail
   subject = '    HELP!'
   sender = "  " + name 
   body =  name + " has fallen!" + "\n" + "\n" + "Come help him at his location: " + "\n" + address
-  message = f'From: {sender} Subject: {subject} \n\n {body}'
+  message = f'Subject: {subject} \n\n {body}'
 
   context = ssl.create_default_context()
   with smtplib.SMTP(smtp_server, port) as server:
