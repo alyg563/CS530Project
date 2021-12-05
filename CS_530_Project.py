@@ -413,7 +413,10 @@ def detectFall():
 def text(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
-  sender_email = gmail
+  #The email we are using to send out the text messages
+  sender_email = "cs530projectsender@gmail.com"
+  #password for that email
+  password = "Raspberry!530"
   receiver_email = phone + endEmail
   from email.mime.text import MIMEText
   from email.mime.multipart import MIMEMultipart
@@ -460,9 +463,6 @@ else:
 phone = input("Enter your emergency contact's phone number: ")
 output = phone + endEmail
 address = input("Enter your current location (address): ")
-print("\nEnsure your email's privacy allows Less Secure APPs \n")
-gmail = input("Enter your gmail address: ")
-password = input("Type your password and press enter: ")
 
 #Main while loop that constantly queries the accelerometer for current velocity,
 # and makes a text if it is determined that a person is falling
