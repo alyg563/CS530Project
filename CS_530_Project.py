@@ -355,6 +355,7 @@ class ICM20948(object):
     q1 = q1 * norm
     q2 = q2 * norm
     q3 = q3 * norm
+    
   def icm20948Check(self):
     bRet=false
     if REG_VAL_WIA == self._read_byte(REG_ADD_WIA):
@@ -396,16 +397,16 @@ def detectFall():
     print("\r\n /-------------------------------------------------------------/ \r\n")
     print('\r\n Roll = %.2f , Pitch = %.2f , Yaw = %.2f\r\n'%(roll,pitch,yaw))
     print('\r\n Acceleration:  X = %f , Y = %f , Z = %f\r\n'%(Accel[0],Accel[1],Accel[2]))
-    #print('\r\n g: gx = %f\r\n'%(gx))
     print('\r\n Gyroscope:     X = %d , Y = %d , Z = %d\r\n'%(Gyro[0],Gyro[1],Gyro[2]))
-    #print('\r\nMagnetic:      X = %d , Y = %d , Z = %d'%((Mag[0]),Mag[1],Mag[2]))
     
+    # This calculates the downward section of the vector
     AccelMagnitude = math.sqrt(Accel[0] * Accel[0] + Accel[1] * Accel[1] + Accel[2] * Accel[2])
     x_Down_Accel_squared = AccelMagnitude * math.sin(pitch) * AccelMagnitude * math.sin(pitch)
     y_Down_Accel_squared = AccelMagnitude * math.cos(pitch) * math.sin(roll) * AccelMagnitude * math.cos(pitch) * math.sin(roll)
     z_Down_Accel_squared = AccelMagnitude * math.cos(pitch) * math.cos(roll) * AccelMagnitude * math.cos(pitch) * math.cos(roll)
     
     Down_Accel_Magnitude = math.sqrt(x_Down_Accel_squared + y_Down_Accel_squared + z_Down_Accel_squared)
+    
     print(Down_Accel_Magnitude)
     return Down_Accel_Magnitude
     
@@ -421,7 +422,7 @@ def text(contactInfo):
   from email.mime.text import MIMEText
   from email.mime.multipart import MIMEMultipart
   subject = "   " + "HELP!"
-  body =  name + " has fallen!" + "\n" + "\n" + "Come help him at his location: " + "\n" + address
+  body =  name + " has fallen!" + "\n" + "\n" + "Come help them at their location: " + "\n" + address
   message = MIMEMultipart('alternative')
   message['From'] = name + f' <{sender_email}>'
   message['Subject'] = subject
@@ -438,11 +439,13 @@ def text(contactInfo):
       print("Texted")
       return
 
+    
+# Main set up and function call
 fallen = false
 contactInfo = "" #Store user inputted contact info
 MotionVal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 detector = ICM20948()
-FallThreshold = 1 # A fall is considered 1.5 Gs Downwards
+FallThreshold = 1.25 # A fall is considered 1.5 Gs Downwards
 
 # User input required to Text their emrgency contact
 name = input("What is your Name? ")
