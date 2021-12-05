@@ -423,7 +423,7 @@ def text(contactInfo):
   subject = "   " + "HELP!"
   body =  name + " has fallen!" + "\n" + "\n" + "Come help him at his location: " + "\n" + address
   message = MIMEMultipart('alternative')
-  message['From'] = name + f' <{gmail}>'
+  message['From'] = name + f' <{sender_email}>'
   message['Subject'] = subject
   message.attach(MIMEText(body))
   text = message.as_string()
