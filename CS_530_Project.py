@@ -410,7 +410,7 @@ def detectFall():
     return Down_Accel_Magnitude
     
 # Make emergency call based on inputted contact info
-def call(contactInfo):
+def text(contactInfo):
   port = 587  # For starttls
   smtp_server = "smtp.gmail.com"
   sender_email = gmail
@@ -465,11 +465,11 @@ gmail = input("Enter your gmail address: ")
 password = input("Type your password and press enter: ")
 
 #Main while loop that constantly queries the accelerometer for current velocity,
-# and makes a call if it is determined that a person is falling
+# and makes a text if it is determined that a person is falling
 while not fallen:
     if detectFall() >= FallThreshold: 
         print("Fallen!")
-        call(contactInfo) # Make emergency call
+        text(contactInfo) # Make emergency text
         fallen = true # exit loop
 
 
