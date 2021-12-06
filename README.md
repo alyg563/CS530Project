@@ -2,6 +2,9 @@
 # Program Contributors: Alyssa Garcia, Sawyer Thompson, Alexander Ray, Shane Tasker
 # README Author: Shane Tasker
 
+# YouTube Video
+# https://youtu.be/fiSPL-p241c
+
 # Summary
 # Our project is a fall detector and messaging system integrated into one product. When the user runs the program, it asks for your name, your emergency provider, your emergency    # contact’s phone number, your current location (address), your gmail address, and your password. When a person falls, the fall detector portion of the program will automatically  # detect that the person is falling. It then will issue a call to the messaging program, which then messages the emergency contact with a message: “Name has fallen! Come help     # him at this location! Address”.
 
